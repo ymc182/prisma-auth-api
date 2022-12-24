@@ -8,7 +8,8 @@
 		"test": "tsc && jest --coverage",
 		"test:watch": "tsc && jest --watch",
 		"dev": "concurrently \"tsc -w\" \"nodemon dist/src/index.js\"",
-		"build": "yarn install && tsc"
+		"build": "yarn install && tsc",
+		"start": "node dist/src/index.js"
 	},
 	"prisma": {
 		"schema": "./src/model/prisma/schema.prisma"
