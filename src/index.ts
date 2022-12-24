@@ -108,7 +108,6 @@ app.get("/user/get_items", VerifyToken(TOKEN_SECRET), async (req, res) => {
 app.post("/user/generate_jwt", VerifyPassword(prisma), async (req, res) => {
 	const discord_id = req.body.discord_id;
 	const password = req.body.password;
-	const passwordHash = hashPassword(password);
 	const token = generateToken({ discord_id: discord_id }, TOKEN_SECRET);
 	TokenResponseHandler(res, token);
 });
