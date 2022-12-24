@@ -51,3 +51,26 @@ export function decrypt(encrypted: string, privateKey: string) {
 	const decrypted = crypto.privateDecrypt(key, buffer);
 	return decrypted.toString();
 }
+
+export function singWithPrivateKey(msg: string, privateKey: string) {
+	const buffer = Buffer.from(msg);
+	const key = crypto.createPrivateKey({
+		key: Buffer.from(privateKey, "base64"),
+		format: "der",
+		type: "pkcs8",
+		/* 		passphrase: passphrase, */
+	});
+	const signature = crypto.sign(null, buffer, key);
+	return signature.toString("base64");
+}
+
+export function verifySignature(msg: string, signature: string, publicKey: string) {
+	const buffer = Buffer.from(msg);
+	const key = crypto.createPublicKey({
+		key: Buffer.from(publicKey, "base64"),
+		format: "der",
+		type: "spki",
+	});
+	const verified = crypto.verify(null, buffer, key, Buffer.from(signature, "base64"));
+	return verified;
+}
