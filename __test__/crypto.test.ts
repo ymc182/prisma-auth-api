@@ -1,4 +1,4 @@
-import { decrypt, encrypt, generateKeyPair, hashPassword } from "./crypto";
+import { decrypt, encrypt, generateKeyPair, hashPassword } from "../src/utils/crypto";
 
 describe("crypto", () => {
 	it("should generate keypair", () => {

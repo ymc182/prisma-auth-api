@@ -1,4 +1,4 @@
-import { PrismaResult } from "./../types/errors.d";
+import { PrismaResult } from "../src/types/errors";
 import { Items, PrismaClient, Users } from "@prisma/client";
 describe("Item", () => {
 	const item: Items = {

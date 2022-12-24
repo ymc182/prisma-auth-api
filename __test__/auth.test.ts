@@ -1,4 +1,4 @@
-import { generateToken, VerifyToken } from "./auth";
+import { generateToken, VerifyToken } from "../src/middlewares/auth";
 
 describe("Auth", () => {
 	test("Should generate token", async () => {

@@ -1,4 +1,4 @@
-import { prismaMock } from "../../singleton";
+import { prismaMock } from "../singleton";
 
 describe("User", () => {
 	test("should create new user", async () => {
