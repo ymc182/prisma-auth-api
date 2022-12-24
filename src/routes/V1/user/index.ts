@@ -6,7 +6,7 @@ import { fetchUser } from "../../../model/user";
 import { generateKeyPair } from "../../../utils/crypto";
 import { UserResponseHandler } from "../../../utils/httpResponse";
 import { generateJwt } from "../../../controllers/generateJwt";
-import { createItemApi, getItems } from "../../../controllers/items";
+import { addItem, getItems } from "../../../controllers/items";
 import { TOKEN_SECRET } from "../../../config";
 const router = express.Router();
 router.get("/:discord_id", async (req, res) => {
@@ -34,8 +34,6 @@ router.post("/generate_keys", VerifyToken(TOKEN_SECRET), async (req, res) => {
 	});
 	res.json({ status: "success", message: "Keys generated", privateKey: { privateKey } });
 });
-router.post("/add_item", VerifyToken(TOKEN_SECRET), createItemApi);
-router.get("/get_items", VerifyToken(TOKEN_SECRET), getItems);
 
 //Password verified routes
 router.post("/generate_jwt", VerifyPassword(prisma), generateJwt);

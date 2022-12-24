@@ -19,7 +19,7 @@ export async function getItems(req: express.Request, res: express.Response) {
 	res.json({ status: "success", message: "Items fetched", items: items });
 }
 
-export async function createItemApi(req: express.Request, res: express.Response) {
+export async function addItem(req: express.Request, res: express.Response) {
 	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
 	const discord_id = tokenPayload.discord_id;
 	let newData: itemData = req.body.data;
