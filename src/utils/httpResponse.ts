@@ -1,7 +1,8 @@
 import { Users } from "@prisma/client";
 import express from "express";
+import { UserData } from "../types";
 import { PrismaResult } from "../types/errors";
-export function UserResponseHandler(res: express.Response, result: PrismaResult<Users, Error>) {
+export function UserResponseHandler(res: express.Response, result: PrismaResult<UserData, Error>) {
 	if (!result.ok) {
 		res.status(400).json({ status: "error", message: result.error.message });
 	} else {

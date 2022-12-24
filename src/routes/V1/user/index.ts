@@ -1,14 +1,15 @@
 import express from "express";
-
 import prisma from "../../../../client";
 import { TokenPayload, VerifyPassword, VerifyToken } from "../../../middlewares/auth";
 import { fetchUser } from "../../../model/user";
 import { generateKeyPair } from "../../../utils/crypto";
 import { UserResponseHandler } from "../../../utils/httpResponse";
 import { generateJwt } from "../../../controllers/generateJwt";
-import { addItem, getItems } from "../../../controllers/items";
 import { TOKEN_SECRET } from "../../../config";
+import { UserData } from "../../../types";
+
 const router = express.Router();
+
 router.get("/:discord_id", async (req, res) => {
 	const discord_id = req.params.discord_id;
 	const result = await fetchUser(prisma, discord_id);

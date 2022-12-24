@@ -12,4 +12,5 @@ export async function register(req: express.Request, res: express.Response, next
 	}
 	const result = await createUser(prisma, req.body.discord_id, req.body.password);
 	UserResponseHandler(res, result);
+	console.log("User created", result.ok ? result.value.discord_id : result.error.message);
 }

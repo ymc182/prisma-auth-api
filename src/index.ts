@@ -2,8 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import bodyParser from "body-parser";
-import { createUser } from "./model/user";
-import { UserResponseHandler } from "./utils/httpResponse";
 import userRoutes from "./routes/V1/user";
 import itemRoutes from "./routes/V1/item";
 import { TOKEN_SECRET } from "./config";

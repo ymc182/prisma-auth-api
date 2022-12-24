@@ -1,6 +1,7 @@
 import { PrismaResult } from "../types/errors";
 import { PrismaClient, Users } from "@prisma/client";
 import { hashPassword } from "../utils/crypto";
+import { UserData } from "../types";
 
 export async function createUser(
 	prisma: PrismaClient,
@@ -21,7 +22,7 @@ export async function createUser(
 	return { ok: true, value: user };
 }
 
-export async function fetchUser(prisma: PrismaClient, discord_id: string): Promise<PrismaResult<Users, Error>> {
+export async function fetchUser(prisma: PrismaClient, discord_id: string): Promise<PrismaResult<UserData, Error>> {
 	const user = await prisma.users.findUnique({
 		where: {
 			discord_id: discord_id,
