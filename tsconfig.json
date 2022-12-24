@@ -1,0 +1,22 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		/* Language and Environment */
+		"target": "ES5",
+
+		/* JavaScript Support */ "allowJs": true /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */,
+		"checkJs": true /* Enable error reporting in 
+		"outDir": "./dist" /* Specify an output folder for all emitted files. */,
+		"removeComments": true /* Disable emitting comments. */,
+		// "noEmit": true,                                   /* Disable emitting files from a compilation. */
+		"outDir": "./dist",
+
+		"importHelpers": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"moduleResolution": "node"
+	},
+	"exclude": ["./dist/**/*", "./node_modules/**/*", "jest.config.ts", "./coverage/**/*", "./src/types/**/*"]
+}

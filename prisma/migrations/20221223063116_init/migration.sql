@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Users" ALTER COLUMN "private_key" SET NOT NULL,
+ALTER COLUMN "private_key" SET DEFAULT '',
+ALTER COLUMN "private_key" SET DATA TYPE TEXT,
+ALTER COLUMN "public_key" SET NOT NULL,
+ALTER COLUMN "public_key" SET DEFAULT '',
+ALTER COLUMN "public_key" SET DATA TYPE TEXT;

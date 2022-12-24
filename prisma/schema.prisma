@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  discord_id    String   @id @unique
+  wallet_id     String[] @default([])
+  password_hash String   @default("")
+  public_key    String? 
+  createdAt     DateTime @default(now())
+  items         Items[]
+}
+
+model Items {
+  id             Int     @id @default(autoincrement())
+  title          String
+  encrypted_data String
+  createdAt      DateTime @default(now())
+  Users           Users?  @relation(fields: [discord_id], references: [discord_id])
+  discord_id String?
+}
