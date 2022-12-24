@@ -28,6 +28,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn test
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: test
