@@ -27,3 +27,4 @@ jobs:
           cache: "npm"
       - run: yarn install --frozen-lockfile
       - run: yarn test
+      - run: curl -X GET ${{ secrets.DEPLOY_HOOK }}
