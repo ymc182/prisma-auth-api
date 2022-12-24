@@ -5,9 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["master"]
-  pull_request:
-    branches: ["master"]
+    branches: ["ci/master"]
 
 jobs:
   build:
@@ -27,3 +25,5 @@ jobs:
           cache: "npm"
       - run: yarn install --frozen-lockfile
       - run: yarn test
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4.2.3
