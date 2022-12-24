@@ -7,8 +7,11 @@
 	"scripts": {
 		"test": "tsc && jest --coverage",
 		"test:watch": "tsc && jest --watch",
-		"dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
+		"dev": "concurrently \"tsc -w\" \"nodemon dist/src/index.js\"",
 		"build": "yarn install && tsc"
+	},
+	"prisma": {
+		"schema": "./src/model/prisma/schema.prisma"
 	},
 	"keywords": [],
 	"author": "",

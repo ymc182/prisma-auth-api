@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import express from "express";
 import { Users, PrismaClient } from "@prisma/client";
-import { generateKeyPair, hashPassword } from "../helper/crypto";
+import { generateKeyPair, hashPassword } from "../utils/crypto";
 export type TokenPayload = {
 	discord_id: string;
 };
