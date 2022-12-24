@@ -28,8 +28,14 @@ export async function fetchUser(prisma: PrismaClient, discord_id: string): Promi
 			discord_id: discord_id,
 		},
 	});
+
 	if (!user) {
 		return { ok: false, error: new Error("User not found") };
 	}
-	return { ok: true, value: user };
+	const userData: UserData = {
+		discord_id: user.discord_id,
+		createdAt: user.createdAt,
+		wallet_id: user.wallet_id,
+	};
+	return { ok: true, value: userData };
 }
