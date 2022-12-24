@@ -1,8 +1,8 @@
-import { itemData } from "../../../types";
+import { itemData } from "../../../../../types";
 import express from "express";
-import { TokenPayload } from "../../../middlewares/auth";
-import prisma from "../../../../client";
-import { createItem } from "../../../model/item";
+import { TokenPayload } from "../../../../../middlewares/auth";
+import prisma from "../../../../../../client";
+import { createItem } from "../../../../../model/item";
 
 export async function getItems(req: express.Request, res: express.Response) {
 	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;

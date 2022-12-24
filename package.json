@@ -11,7 +11,7 @@
 		"build": "yarn install && tsc"
 	},
 	"prisma": {
-		"schema": "./src/model/schema.prisma"
+		"schema": "./src/model/prisma/schema.prisma"
 	},
 	"keywords": [],
 	"author": "",

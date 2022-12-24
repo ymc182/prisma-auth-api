@@ -2,14 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import bodyParser from "body-parser";
-import { createUser, fetchUser } from "./model/user";
-import { TokenResponseHandler, UserResponseHandler } from "./utils/httpResponse";
-import { VerifyPassword, generateToken, VerifyToken, TokenPayload } from "./middlewares/auth";
-import { generateKeyPair, hashPassword } from "./utils/crypto";
-import { createItem } from "./model/item";
-import { generateJwt } from "./routes/password";
-import { createItemApi, getItems } from "./routes/tokens/item";
-
+import { createUser } from "./model/user";
+import { UserResponseHandler } from "./utils/httpResponse";
+import userRoutes from "./routes/V1/user";
 const prisma = new PrismaClient();
 dotenv.config();
 export const TOKEN_SECRET = process.env.TOKEN_SECRET!;
@@ -31,39 +26,17 @@ app.post("/register", async (req, res) => {
 	const result = await createUser(prisma, req.body.discord_id, req.body.password);
 	UserResponseHandler(res, result);
 });
-app.get("/user/:discord_id", async (req, res) => {
-	const discord_id = req.params.discord_id;
 
-	const result = await fetchUser(prisma, discord_id);
+/**
+ * Routes for /user
+ */
+app.use("/user", userRoutes);
 
-	UserResponseHandler(res, result);
-});
-
-//token verified routes
-app.post("/user/auth_test", VerifyToken(TOKEN_SECRET), (req, res) => {
-	res.status(200).json({ status: "success", message: "Authorized" });
-});
-app.post("/user/generate_keys", VerifyToken(TOKEN_SECRET), async (req, res) => {
-	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
-	const discord_id = tokenPayload.discord_id;
-	const { publicKey, privateKey } = generateKeyPair();
-
-	await prisma.users.update({
-		where: {
-			discord_id: discord_id,
-		},
-		data: {
-			public_key: publicKey,
-		},
-	});
-	res.json({ status: "success", message: "Keys generated", privateKey: { privateKey } });
-});
-app.post("/user/add_item", VerifyToken(TOKEN_SECRET), createItemApi);
-app.get("/user/get_items", VerifyToken(TOKEN_SECRET), getItems);
-
-//Password verified routes
-app.post("/user/generate_jwt", VerifyPassword(prisma), generateJwt);
-
+/**
+ *
+ *
+ *
+ */
 app.listen(PORT, () => {
 	console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 });
