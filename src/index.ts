@@ -87,7 +87,7 @@ app.post("/user/add_item", VerifyToken(TOKEN_SECRET), async (req, res) => {
 		return;
 	}
 
-	res.json({ status: "success", message: "Data set" });
+	res.json({ status: "success", message: "Data set", data: result });
 });
 app.get("/user/get_items", VerifyToken(TOKEN_SECRET), async (req, res) => {
 	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
