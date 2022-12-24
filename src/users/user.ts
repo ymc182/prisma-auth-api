@@ -1,6 +1,6 @@
 import { PrismaResult } from "./../types/errors.d";
 import { PrismaClient, Users } from "@prisma/client";
-import { hashPassword } from "../helper/crypto";
+import { hashPassword } from "../utils/crypto";
 
 export async function createUser(
 	prisma: PrismaClient,

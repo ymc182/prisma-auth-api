@@ -3,12 +3,12 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import bodyParser from "body-parser";
 import { createUser, fetchUser } from "./users/user";
-import { TokenResponseHandler, UserResponseHandler } from "./helper/httpResponse";
-import { VerifyPassword, generateToken, VerifyToken, TokenPayload } from "./auth/auth";
-import { generateKeyPair, hashPassword } from "./helper/crypto";
+import { TokenResponseHandler, UserResponseHandler } from "./utils/httpResponse";
+import { VerifyPassword, generateToken, VerifyToken, TokenPayload } from "./middlewares/auth";
+import { generateKeyPair, hashPassword } from "./utils/crypto";
 import { createItem } from "./users/item";
 import { generateJwt } from "./routes/password";
-import { createItemApi, getItems } from "./routes/item";
+import { createItemApi, getItems } from "./routes/tokens/item";
 
 const prisma = new PrismaClient();
 dotenv.config();

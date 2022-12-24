@@ -1,5 +1,5 @@
 import { Items, PrismaClient, Users } from "@prisma/client";
-import { encrypt } from "../helper/crypto";
+import { encrypt } from "../utils/crypto";
 
 export async function createItem(
 	prisma: PrismaClient,
