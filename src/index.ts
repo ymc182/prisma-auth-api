@@ -7,13 +7,12 @@ import { TokenResponseHandler, UserResponseHandler } from "./helper/httpResponse
 import { VerifyPassword, generateToken, VerifyToken, TokenPayload } from "./auth/auth";
 import { generateKeyPair, hashPassword } from "./helper/crypto";
 import { createItem } from "./users/item";
-interface itemData {
-	title: string;
-	data: string;
-}
+import { generateJwt } from "./routes/password";
+import { createItemApi, getItems } from "./routes/item";
+
 const prisma = new PrismaClient();
 dotenv.config();
-const TOKEN_SECRET = process.env.TOKEN_SECRET!;
+export const TOKEN_SECRET = process.env.TOKEN_SECRET!;
 console.log("Init server with TOKEN_SECRET", TOKEN_SECRET);
 const app = express();
 app.use(bodyParser.json());
@@ -59,58 +58,12 @@ app.post("/user/generate_keys", VerifyToken(TOKEN_SECRET), async (req, res) => {
 	});
 	res.json({ status: "success", message: "Keys generated", privateKey: { privateKey } });
 });
-app.post("/user/add_item", VerifyToken(TOKEN_SECRET), async (req, res) => {
-	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
-	const discord_id = tokenPayload.discord_id;
-	let newData: itemData = req.body.data;
-	if (!newData.title || !newData.data) {
-		res.status(400).json({ status: "error", message: "data and title are required" });
-		return;
-	}
-	const user = await prisma.users.findUnique({
-		where: {
-			discord_id: discord_id,
-		},
-	});
-	if (!user) {
-		res.status(400).json({ status: "error", message: "User not found" });
-		return;
-	}
-	const pubKey = user.public_key;
-	if (!pubKey) {
-		res.status(400).json({ status: "error", message: "User has no public key" });
-		return;
-	}
-	const result = await createItem(prisma, discord_id, newData.data, newData.title, pubKey);
-	if (!result) {
-		res.status(400).json({ status: "error", message: "Failed to set data" });
-		return;
-	}
-
-	res.json({ status: "success", message: "Data set", data: result });
-});
-app.get("/user/get_items", VerifyToken(TOKEN_SECRET), async (req, res) => {
-	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
-	const discord_id = tokenPayload.discord_id;
-	const items = await prisma.items.findMany({
-		where: {
-			discord_id: discord_id,
-		},
-	});
-	if (!items) {
-		res.status(400).json({ status: "error", message: "User not found" });
-		return;
-	}
-	res.json({ status: "success", message: "Items fetched", items: items });
-});
+app.post("/user/add_item", VerifyToken(TOKEN_SECRET), createItemApi);
+app.get("/user/get_items", VerifyToken(TOKEN_SECRET), getItems);
 
 //Password verified routes
-app.post("/user/generate_jwt", VerifyPassword(prisma), async (req, res) => {
-	const discord_id = req.body.discord_id;
-	const password = req.body.password;
-	const token = generateToken({ discord_id: discord_id }, TOKEN_SECRET);
-	TokenResponseHandler(res, token);
-});
+app.post("/user/generate_jwt", VerifyPassword(prisma), generateJwt);
+
 app.listen(PORT, () => {
 	console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 });
