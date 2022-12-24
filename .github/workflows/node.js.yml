@@ -28,4 +28,4 @@ jobs:
           env:DEPLOY_HOOK: ${{ secrets.DEPLOY_HOOK }}
       - run: yarn install --frozen-lockfile
       - run: yarn test
-      - run: curl -X GET "$DEPLOY_HOOK"
+      - run: curl -X GET $DEPLOY_HOOK
