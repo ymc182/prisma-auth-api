@@ -5,9 +5,12 @@ import bodyParser from "body-parser";
 import { createUser } from "./model/user";
 import { UserResponseHandler } from "./utils/httpResponse";
 import userRoutes from "./routes/V1/user";
+import itemRoutes from "./routes/V1/item";
+import { TOKEN_SECRET } from "./config";
+import { register } from "./controllers/register";
 const prisma = new PrismaClient();
 dotenv.config();
-export const TOKEN_SECRET = process.env.TOKEN_SECRET!;
+
 console.log("Init server with TOKEN_SECRET", TOKEN_SECRET);
 const app = express();
 app.use(bodyParser.json());
@@ -17,16 +20,12 @@ app.get("/", (req, res) => {
 	res.send(`Server Status: active , Time: ${new Date()}`);
 });
 
-//TODO: should using discord token to verify user
-app.post("/register", async (req, res) => {
-	if (!req.body.discord_id || !req.body.password) {
-		res.status(400).json({ status: "error", message: "discord_id and password are required" });
-		return;
-	}
-	const result = await createUser(prisma, req.body.discord_id, req.body.password);
-	UserResponseHandler(res, result);
-});
+app.post("/register", register);
 
+/**
+ * Routes for /item
+ */
+app.use("/item", itemRoutes);
 /**
  * Routes for /user
  */
