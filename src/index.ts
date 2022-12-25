@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import userRoutes from "./routes/V1/user";
 import itemRoutes from "./routes/V1/item";
 import { TOKEN_SECRET } from "./config";
-import { register } from "./controllers/register";
+import { register } from "./controllers/user";
 const prisma = new PrismaClient();
 dotenv.config();
 

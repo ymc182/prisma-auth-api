@@ -1,6 +1,7 @@
 import express from "express";
 
 import prisma from "../../client";
+import { TokenPayload } from "../middlewares/auth";
 import { createUser } from "../model/user";
 import { UserResponseHandler } from "../utils/httpResponse";
 
@@ -13,4 +14,13 @@ export async function register(req: express.Request, res: express.Response, next
 	const result = await createUser(prisma, req.body.discord_id, req.body.password);
 	UserResponseHandler(res, result);
 	console.log("User created", result.ok ? result.value.discord_id : result.error.message);
+}
+
+export async function getUserByToken(token: TokenPayload) {
+	const user = await prisma.users.findUnique({
+		where: {
+			discord_id: token.discord_id,
+		},
+	});
+	return user;
 }

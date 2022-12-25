@@ -4,17 +4,14 @@ import { TokenPayload } from "../middlewares/auth";
 import prisma from "../../client";
 import { createItem } from "../model/item";
 import { encrypt } from "../utils/crypto";
+import { getUserByToken } from "./user";
 
 export async function getItems(req: express.Request, res: express.Response) {
 	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
 	const discord_id = tokenPayload.discord_id;
-	const items = await prisma.items.findMany({
-		where: {
-			discord_id: discord_id,
-		},
-	});
+	const items = await getItemsByUser(discord_id);
 	if (!items) {
-		res.status(400).json({ status: "error", message: "User not found" });
+		res.status(400).json({ status: "error", message: "Items not found under supplied user" });
 		return;
 	}
 	res.json({ status: "success", message: "Items fetched", items: items });
@@ -28,11 +25,7 @@ export async function addItem(req: express.Request, res: express.Response) {
 		res.status(400).json({ status: "error", message: "data and title are required" });
 		return;
 	}
-	const user = await prisma.users.findUnique({
-		where: {
-			discord_id: discord_id,
-		},
-	});
+	const user = await getUserByToken(tokenPayload);
 	if (!user) {
 		res.status(400).json({ status: "error", message: "User not found" });
 		return;
@@ -130,4 +123,22 @@ export async function deleteItem(req: express.Request, res: express.Response) {
 		return;
 	}
 	res.json({ status: "success", message: "Data deleted", data: result });
+}
+
+export async function getItemById(itemId: number) {
+	const item = await prisma.items.findUnique({
+		where: {
+			id: itemId,
+		},
+	});
+	return item;
+}
+
+export async function getItemsByUser(discord_id: string) {
+	const items = await prisma.items.findMany({
+		where: {
+			discord_id: discord_id,
+		},
+	});
+	return items;
 }

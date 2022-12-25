@@ -6,7 +6,7 @@ import { generateKeyPair } from "../../../utils/crypto";
 import { UserResponseHandler } from "../../../utils/httpResponse";
 import { generateJwt } from "../../../controllers/generateJwt";
 import { TOKEN_SECRET } from "../../../config";
-import { register } from "../../../controllers/register";
+import { register } from "../../../controllers/user";
 
 const router = express.Router();
 
