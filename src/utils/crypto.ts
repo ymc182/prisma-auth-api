@@ -5,11 +5,9 @@ export function hashPassword(password: string) {
 	return crypto.createHash("sha256").update(password).digest("hex").toString();
 }
 
-//create keypair
 export function generateKeyPair() {
-	//generate keypair and return as string
 	let keys = crypto.generateKeyPairSync("rsa", {
-		modulusLength: 512,
+		modulusLength: 1024,
 		publicKeyEncoding: {
 			type: "spki",
 			format: "der",
@@ -17,6 +15,8 @@ export function generateKeyPair() {
 		privateKeyEncoding: {
 			type: "pkcs8",
 			format: "der",
+			cipher: "aes-256-cbc",
+			passphrase: passphrase,
 		},
 	});
 	const publicKey = keys.publicKey.toString("base64");
@@ -33,23 +33,45 @@ export function encrypt(data: string, publicKey: string) {
 		format: "der",
 		type: "spki",
 	});
-	const encrypted = crypto.publicEncrypt(key, buffer);
-	return encrypted.toString("base64");
+	//create random symmetric key
+	const symmetricKey = crypto.createSecretKey(crypto.randomBytes(32));
+	const iv = crypto.randomBytes(16);
+
+	//encrypt data with symmetric key
+	const cipher = crypto.createCipheriv("aes-256-cbc", symmetricKey, iv);
+	let _encryptedData = cipher.update(buffer);
+	_encryptedData = Buffer.concat([_encryptedData, cipher.final()]);
+	//encrypt symmetric key with public key
+	const encryptedIv = crypto.publicEncrypt(key, iv);
+	const encryptedSymmetricKey = crypto.publicEncrypt(key, symmetricKey.export());
+	//concat encrypted data and encrypted symmetric key
+	const encrypted =
+		_encryptedData.toString("base64") +
+		":" +
+		encryptedSymmetricKey.toString("base64") +
+		":" +
+		encryptedIv.toString("base64");
+	return encrypted;
 }
 
 //decrypt
 //this should be used in the client side
 export function decrypt(encrypted: string, privateKey: string) {
-	//decrypt with der format private key
-	const buffer = Buffer.from(encrypted, "base64");
 	const key = crypto.createPrivateKey({
 		key: Buffer.from(privateKey, "base64"),
 		format: "der",
 		type: "pkcs8",
-		/* 		passphrase: passphrase, */
+		passphrase: passphrase,
 	});
-	const decrypted = crypto.privateDecrypt(key, buffer);
-	return decrypted.toString();
+	const encryptedData = encrypted.split(":");
+	const encryptedSymmetricKey = Buffer.from(encryptedData[1], "base64");
+	const encryptedIv = Buffer.from(encryptedData[2], "base64");
+	const symmetricKey = crypto.privateDecrypt(key, encryptedSymmetricKey);
+	const iv = crypto.privateDecrypt(key, encryptedIv);
+	const decipher = crypto.createDecipheriv("aes-256-cbc", symmetricKey, iv);
+	let _decryptedData = decipher.update(Buffer.from(encryptedData[0], "base64"));
+	_decryptedData = Buffer.concat([_decryptedData, decipher.final()]);
+	return _decryptedData.toString();
 }
 
 export function singWithPrivateKey(msg: string, privateKey: string) {
@@ -58,7 +80,7 @@ export function singWithPrivateKey(msg: string, privateKey: string) {
 		key: Buffer.from(privateKey, "base64"),
 		format: "der",
 		type: "pkcs8",
-		/* 		passphrase: passphrase, */
+		passphrase: passphrase,
 	});
 	const signature = crypto.sign(null, buffer, key);
 	return signature.toString("base64");
