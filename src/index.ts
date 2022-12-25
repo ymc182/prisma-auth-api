@@ -18,8 +18,6 @@ app.get("/", (req, res) => {
 	res.send(`Server Status: active , Time: ${new Date()}`);
 });
 
-app.post("/register", register);
-
 /**
  * Routes for /item
  */

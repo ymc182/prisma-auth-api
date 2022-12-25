@@ -6,7 +6,7 @@ import { generateKeyPair } from "../../../utils/crypto";
 import { UserResponseHandler } from "../../../utils/httpResponse";
 import { generateJwt } from "../../../controllers/generateJwt";
 import { TOKEN_SECRET } from "../../../config";
-import { UserData } from "../../../types";
+import { register } from "../../../controllers/register";
 
 const router = express.Router();
 
@@ -15,7 +15,18 @@ router.get("/:discord_id", async (req, res) => {
 	const result = await fetchUser(prisma, discord_id);
 	UserResponseHandler(res, result);
 });
+router.post("/register", register);
 
+router.delete("/delete_user", VerifyToken(TOKEN_SECRET), async (req, res) => {
+	const tokenPayload: TokenPayload = res.locals.tokenPayload as TokenPayload;
+	const discord_id = tokenPayload.discord_id;
+	const result = await prisma.users.delete({
+		where: {
+			discord_id: discord_id,
+		},
+	});
+	res.json({ status: "success", message: "User deleted", result: result });
+});
 //token verified routes
 router.post("/auth_test", VerifyToken(TOKEN_SECRET), (req, res) => {
 	res.status(200).json({ status: "success", message: "Authorized" });
