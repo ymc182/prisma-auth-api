@@ -17,6 +17,10 @@ jobs:
       matrix:
         node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+      PASSPHRASE: ${{ secrets.PASSPHRASE }}
 
     steps:
       - uses: actions/checkout@v3
